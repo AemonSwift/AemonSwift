@@ -424,9 +424,8 @@ hr:
 subtitle: 
   enable: true
   sub:
-    - 今日事&#44;今日畢
-    - Never put off till tomorrow what you can do today
-
+    - 古之立大事者，不惟有超世之才，亦必有坚忍不拔之志！
+    - Actions speak louder than words.
 
 
 ####    側邊欄    ####
@@ -444,7 +443,7 @@ aside:
 
 # 網站公告
 announcement:
-  content: 感謝訪問本站，若喜歡請收藏 ^_^
+  content: 分享知识，记录生活～
 
 # busuanzi count for PV / UV in site
 # 訪問人數
