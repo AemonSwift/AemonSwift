@@ -86,7 +86,7 @@ local_search:
 # Please see doc for more details: https://jerryc.me/posts/21cfbf15/#MathJax
 # ---------------
 mathjax:
-  enable: false
+  enable: true
   cdn: https://cdn.jsdelivr.net/npm/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML
 
 # KaTeX
