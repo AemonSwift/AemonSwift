@@ -152,7 +152,7 @@ archive_img: https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/Photo/archive.jpg
 tag_img: https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/tag-bg.png
 
 # the banner image of category page
-category_img: https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/category-bg
+category_img: https://cdn.jsdelivr.net/gh/AemonSwift/AemonSwift@latest/AemonSwift.github.io/images/chess-2629758_1920.jpg
 
 # if the photo link cannot connect,it will show that
 lodding_bg:
