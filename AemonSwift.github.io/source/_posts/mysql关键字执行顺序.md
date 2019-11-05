@@ -3,7 +3,7 @@ title: mysql关键字执行顺序
 date: 2019-11-03 20:32:30
 tags:
 - 数据库
--SQL
+- SQL
 categories:
 - 数据库
 - SQL
