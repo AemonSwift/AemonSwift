@@ -19,7 +19,7 @@ categories:
 即不存在一个字段中存在两个及以上值的情况。
 在上述例子中，为了规范话，我们可以进行拆分两个表格。
 一个是订单表：一个订单号可以唯一的确定一行
-![订单表](https://cdn.jsdelivr.net/gh/AemonSwift/AemonSwift@latest/AemonSwift.github.io/images/mysql范式12png)
+![订单表](https://cdn.jsdelivr.net/gh/AemonSwift/AemonSwift@latest/AemonSwift.github.io/images/mysql范式2.png)
 一个是细节表：一个订单号+产品编码才可以唯一的确定一行。
 ![细节表](https://cdn.jsdelivr.net/gh/AemonSwift/AemonSwift@latest/AemonSwift.github.io/images/mysql范式3.png)
 所以我们说订单表的主键是 （订单号）， 细节表的主键是（订单号，产品编码）， 这是一个复合主键。
@@ -33,21 +33,22 @@ categories:
 拆分以后，表4.1订单细节表的主键还是（订单号，产品编码），但是剩下的属性（数量）肯定是完全依赖于主键的。表4.2产品表也类似，主键是产品编码，剩下的属性都依赖于产品编码
 
 ## 不满足第二范式存在如下问题
+1. 数据冗余： 同个产品可以产生n个订单号，产品的名称和单价重复了n-1次
+2. 更新异常： 若产品更改名字或单价时，数据表关于此产品所在行的名称或单价都要更新，否则导致用户名称不一致性。
+3. 插入异常：若出现一个新产品时，则这个产品是无法插入到数据库中。
+4. 删除异常：一批订单号已完成，这些记录应该从数据库表中删除。但删除时导致产品的信息也删除。
+
+# 第三范式——消除依赖传递(属性不依赖于其它非主属性)
+我们再回过头来看一下表格3 订单表，它的主键是订单号，所有的属性都依赖于主键，已经是第二范式。 但是我们发现，订单号能决定用户ID，用户ID能决定用户名称，这就出现了依赖传递：$\color{red}{订单号->用户ID->用户名称}$。
+![依赖传递表](https://cdn.jsdelivr.net/gh/AemonSwift/AemonSwift@latest/AemonSwift.github.io/images/mysql范式6.png)
+进行拆分：
+![拆分表](https://cdn.jsdelivr.net/gh/AemonSwift/AemonSwift@latest/AemonSwift.github.io/images/mysql范式7.png)
+## 不满足第三范式存在如下问题
 1. 数据冗余：同个用户可以产生n个订单，用户的名称重复了n-1次
 2. 更新异常：若用户更改自己的名称时，数据表关于此用户所在行的名称都要更新，否则导致用户名称不一致性。
 3. 插入异常：若出现一个新用户时，用户只来注册。不来买东西，则这个用户是无法插入到数据库中。
 4. 删除异常：一批用户已完成产品的买入，这些记录应该从数据库表中删除。但删除时导致用户的信息也删除。
 
-# 第三范式——消除依赖传递(属性不依赖于其它非主属性)
-我们再回过头来看一下表格3 订单表，它的主键是订单号，所有的属性都依赖于主键，已经是第二范式。 但是我们发现，订单号能决定用户ID，用户ID能决定用户名称，这就出现了依赖传递：$\color{red}{订单号->用户ID->用户名称}$。
-![依赖传递表]](https://cdn.jsdelivr.net/gh/AemonSwift/AemonSwift@latest/AemonSwift.github.io/images/mysql范式6.png)
-进行拆分：
-![拆分表]](https://cdn.jsdelivr.net/gh/AemonSwift/AemonSwift@latest/AemonSwift.github.io/images/mysql范式7.png)
-## 不满足第二范式存在如下问题
-1. 数据冗余：
-2. 更新异常：
-3. 插入异常：
-4. 删除异常：
 
 # BC范式——消除非主属性对任一一个候选键依赖
 例如：
@@ -92,6 +93,7 @@ CUSTOMERID| PHONE| CELL
 :-:|:-:|:-:
 1000 |8828-1234 |149088888888
 1000 |8838-1234 |149099999999
+
 由于PHONE和CELL是互相独立的，而有些用户又有两个和多个值。这时此表就违反第四范式。
 在这种情况下，此表的设计就会带来很多维护上的麻烦。例如，如果用户放弃第一行的固定电话和第二行的移动电话，那么这两行会合并吗？等等
 解决问题的方法为，设计一个新表NEW_PHONE(CUSTOMERID,NUMBER,TYPE).这样就可以对每个用户处理不同类型的多个电话号码，而不会违反第四范式。
