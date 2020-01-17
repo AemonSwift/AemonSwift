@@ -326,3 +326,40 @@ docker run --name b2 --network mybr0 -it busybox:latest
 两个容器通信，在宿主机上打开转发功能
 cat /proc/sys/net/ipv4/ip_forward
 ```
+
+文件的修改，删除效率非常低（涉及到多层）。而针对redis等这种io密集型，实现持久化存储的时候。这样存储系统势必对底层存储系统的性能要求较高。因此要想绕过镜像cow的限制（绕过容器的文件系统的限制），通过使用存储卷实现。把宿主机上的某路径与容器的某路径建立绑定关系，容器上写数据，就是写在宿主机的路径上。两者共享数据内容。宿主对应的目录称为volume。存在问题？容器关联哪些宿主机的目录，下次启动忘记了怎么办？——利用文件来保存启动容器并创建容器的相关配置（这是容器编排的内容）。把数据存储在nfs上面，可以让容器不局限在单机之上。
+```
+linux 中 mount --bind 能够实现
+```
+docker的存储卷使用的是宿主机上本地的文件目录，并不能直接使用nfs。docker有两种类型存储卷
+- bind mont volume：在宿主机和容器中的路径都需要人工来指定。
+
+- docker managed volume：只需指定容器的目录，宿主机的目录由docker deamon来自行维护。优点：不存在耦合；缺点：人工无法指定。
+
+```
+docker run -it --name bbox1 -v /data busybox ---指定容器的目录
+
+docker run -i -v hostdir:volume busybox
+
+docker inspect bbox1--来查看信息mount：source
+
+来进行过滤信息——go 模板
+docker inspect -f {{.Mounts}} b2 ---根下的Mounts信息
+docker inspect -f {{.NetworSettings.IPAddress}} b2
+```
+一个宿主机上多个docker可以共享宿主机的同一个目录来挂载，达到了多个docker共享数据。一个docker可以复制其他docker存储卷的设置。————例如joined container（nginx，Tomcat），也需要共享存储卷。
+
+```
+docker run -it --name box1 --volume-from bbox1 busybox --复制一个已存在容器的存储卷
+```
+
+```
+joined container制作：先制作一个基础容器，其他生产力的容器来拷贝上面的配置
+
+docker run --name infracon -it -v /data/volumes/:/data/web/html busybox 
+
+docker run --name nginx --network container:infracon --volumes-from infracon -it busybox
+
+```
+
+单机容器编排工具——docker-compose

@@ -35,3 +35,18 @@ spaces = spaces.len(); //错误
 类型：i8,u8,i16,u16,i32,u32,i64,u64,isize,usize(这两个类似int),f32,f64
 字面值：98_222(98222),0xff,0o77,0b1111_0000,b'A'(u8的字节型)
 rust的release的构建中，是不会检测数据的溢出，依赖整型溢出被认为是一种错误，即便可能出现这种行为。如果你确实需要这种行为，标准库中有一个类型显式提供此功能，Wrapping。
+
+```
+cargo new hello
+cargo build 
+cargo run 
+cargo check --检查语法
+
+println!---一个宏
+```
+
+```rs
+fn main(){
+    println!("hello world!");
+}
+```
